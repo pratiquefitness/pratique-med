@@ -13,6 +13,18 @@ export const checkRecaptchaSecret = async (isVerified, ip) => {
   return response?.data?.success || 0
 }
 
+export const consultarClienteApi = async (unidade, cpf, email) => {
+  const apiUrl = `/vendas/cliente/${unidade}/consultarClienteJson?cpf=${cpf}&email=${email}`
+
+  try {
+    const response = await apiPacto.post(apiUrl)
+    return response.data
+  } catch (error) {
+    console.error('Erro na consulta do cliente:', error)
+    throw error
+  }
+}
+
 export const payOrder = async payData => {
   const numeroCartao = payData.cardNumber.replace(/\s+/g, '')
   const validade = payData.cardExpiration.replace('/', '/20')
@@ -38,10 +50,13 @@ export const payOrder = async payData => {
   })
 
   if (response.data.return === 'APROVADA') {
-    await ApiPratique.get('pagamento/checkoutpageplano/api/salvarafiliado.php', {
+    await ApiPratique.get('pagamento/checkoutpageplano/api/salvamed.php', {
       params: {
-        obs: payData.obs,
-        cpf: payData.cpf
+        plano: payData.plano.codigo,
+        nome: payData.nome,
+        email: payData.email,
+        cpf: payData.cpf,
+        dataNascimento: payData.data_nascimento
       }
     })
     return true

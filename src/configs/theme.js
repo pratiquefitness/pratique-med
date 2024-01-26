@@ -8,7 +8,7 @@ const theme = {
     dark: antheme.darkAlgorithm
   },
   colorPrimary: {
-    red: '#fc017b'
+    red: '0043ff'
   },
   logo: {
     red: '/logo-min.svg'

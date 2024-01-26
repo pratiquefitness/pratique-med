@@ -3,12 +3,12 @@ import Link from 'next/link'
 export default function Header() {
   return (
     <header className="py-3">
-      <div className="container d-flex flex-wrap justify-content-center">
+      <div className="container d-flex flex-wrap justify-content-center text-center">
         <Link
           href="https://pratiquefitness.com.br/"
-          className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+          className="d-flex align-items-center mb-3 mb-md-0 link-body-emphasis text-decoration-none"
         >
-          <img src="/logo2.png" alt="" />
+          <img src="/logomed.png" alt="" />
         </Link>
 
         {/* <ul className="nav my-3">

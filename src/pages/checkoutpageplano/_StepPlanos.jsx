@@ -1,6 +1,6 @@
 import { data, getCodeOfPlan, getValueOfPlan, planos } from '@/configs/planos'
 import { CheckCircleTwoTone } from '@ant-design/icons'
-import { Alert, Collapse } from 'antd'
+import { Alert, Collapse, Modal } from 'antd'
 import SidebarSteps from './_SidebarSteps'
 import { useEffect, useState } from 'react'
 import utils from '@/utils'
@@ -52,7 +52,6 @@ export default function StepPlanos({
   const onChangePlano = e => {
     setPlanoLoading(true)
     const plano = e.target.value
-    console.log(plano)
     setDataCheckout(prev => {
       return { ...prev, selected: plano }
     })
@@ -81,8 +80,8 @@ export default function StepPlanos({
     <div className="content">
       <div className="container">
         <div className="row">
-          <div className="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-            <h3 className="mb-4">Escolha a assinatura que tornará sua vida mais feliz e saudável:</h3>
+          <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h6 className="mb-4">PAGAMENTO RECORRENTE (NÃO OCUPA O LIMITE DO CARTÃO DE CRÉDITO)</h6>
             {error && <Alert message="Selecione um plano." type="error" className="mb-3" showIcon />}
 
             {customPlan ? (
@@ -118,7 +117,7 @@ export default function StepPlanos({
                 //const dados = data(unidade).filter(item => item[plano])
                 return planoExist && plano === 'plano_plus' ? (
                   <>
-                    <div className={`box-plan ${plano === dataCheckout.selected ? 'selected' : ''}`} key={key}>
+                    <div className={`box-plan  ${plano === dataCheckout.selected ? 'selected' : ''}`} key={key}>
                       <div className="row">
                         <div className="col-4">
                           <div className="form-check">
@@ -142,35 +141,6 @@ export default function StepPlanos({
                         <div className="col-3 text-center">
                           <p className="title">Valor</p>
                           <p className="value">R$ {getValueOfPlan(unidade[plano])}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`box-plan ${plano === adicional ? 'selected' : ''}`} key={key}>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value={'plano_combo_plus'}
-                              id={'plano_combo_plus'}
-                              checked={adicional}
-                              onChange={() => {
-                                setAdicional(!adicional)
-                                onChangePlano({
-                                  target: {
-                                    value: adicional ? 'plano_plus' : 'plano_combo_plus'
-                                  }
-                                })
-                              }}
-                            />
-                            <p className="value text-success d-flex" style={{ justifyContent: 'space-between' }}>
-                              + Adicionar combo nutri por 19,90 /mês.
-                            </p>
-                            <p className="value">
-                              Consulta com nutricionista a cada 45 dias. De <s>89,90</s> por 19,90 por mes.
-                            </p>
-                          </div>
                         </div>
                       </div>
                     </div>
