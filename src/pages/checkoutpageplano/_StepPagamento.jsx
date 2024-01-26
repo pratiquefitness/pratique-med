@@ -28,20 +28,21 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   const [apiResponse, setApiResponse] = useState(null)
 
   useEffect(() => {
-    const consultarCliente = async () => {
-      try {
-        const response = await consultarClienteApi(unidade, form.getFieldValue('cpf'), form.getFieldValue('email'))
-        setApiResponse(response)
-      } catch (error) {
-        console.error('Erro ao consultar o cliente:', error)
-        setApiResponse(null)
+    // Chame a função apenas se o CPF foi inserido
+    if (cpfEntered) {
+      const consultarCliente = async () => {
+        try {
+          const response = await consultarClienteApi(unidade, form.getFieldValue('cpf'), form.getFieldValue('email'))
+          setApiResponse(response)
+        } catch (error) {
+          console.error('Erro ao consultar o cliente:', error)
+          setApiResponse(null)
+        }
       }
-    }
 
-    // Chame a função quando o valor do campo de CPF mudar
-    form.setFieldsValue({ cpf: form.getFieldValue('cpf') }) // Este é um truque para acionar o evento onChange
-    consultarCliente()
-  }, [form.getFieldValue('cpf')])
+      consultarCliente()
+    }
+  }, [cpfEntered, form.getFieldValue('cpf')])
 
   useEffect(() => {
     if (apiResponse) {
