@@ -45,7 +45,7 @@ export default function StepCadastro({
     <div className="content">
       <div className="container">
         <div className="row">
-          <div className="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+          <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <h6 className="mb-4">Agora, preencha estes campos de cadastro na Pratique Med:</h6>
             <Form onFinish={onFinishForm} form={form}>
               <Form.Item name="nome" rules={[required]}>
