@@ -8,7 +8,7 @@ import Cards from 'react-credit-cards'
 import valid from 'card-validator'
 import { Loading } from '@/components'
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { getIP, payOrder } from '@/services/actions/checkout'
+import { getIP, payOrder, consultarClienteApi } from '@/services/actions/checkout'
 import { useRouter } from 'next/router'
 import { PlanosNomes } from '@/configs/planos'
 
@@ -25,6 +25,39 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   const router = useRouter()
   const isencaoMatricula = 8.32
   const [modalVisible, setModalVisible] = useState(false)
+  const [apiResponse, setApiResponse] = useState(null)
+
+  useEffect(() => {
+    const consultarCliente = async () => {
+      try {
+        const response = await consultarClienteApi(unidade, form.getFieldValue('cpf'), form.getFieldValue('email'))
+        setApiResponse(response)
+      } catch (error) {
+        console.error('Erro ao consultar o cliente:', error)
+        setApiResponse(null)
+      }
+    }
+
+    // Chame a função quando o valor do campo de CPF mudar
+    form.setFieldsValue({ cpf: form.getFieldValue('cpf') }) // Este é um truque para acionar o evento onChange
+    consultarCliente()
+  }, [form.getFieldValue('cpf')])
+
+  useEffect(() => {
+    if (apiResponse) {
+      const cliente = apiResponse.return[0]
+
+      if (cliente.cpf === form.getFieldValue('cpf') && cliente.email !== form.getFieldValue('email')) {
+        // CPF igual, mas e-mail diferente
+        form.setFieldsValue({ email: cliente.email })
+        // Abra o pop-up informando que o e-mail foi atualizado
+        // ...
+      } else if (cliente.cpf === form.getFieldValue('cpf') && cliente.email === form.getFieldValue('email')) {
+        // CPF e e-mail iguais, exiba pop-up informando que o cadastro já existe
+        // ...
+      }
+    }
+  }, [apiResponse])
 
   const [values, setValues] = useState({
     cardSecurityCode: '',
@@ -46,7 +79,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   const currentUrl = router.asPath
   const temParametroObs = currentUrl.includes('obs=')
   const temAfiliadoMed = currentUrl.toLowerCase().includes('afiliadomed')
-  const initialCuppomValue = temAfiliadoMed ? null : 'projetovidao'
+  const initialCuppomValue = !temAfiliadoMed ? null : 'projetovidao'
   const [cuppomValue, setCuppomValue] = useState(initialCuppomValue)
 
   // Fun  o para abrir o modal ao clicar no link
@@ -144,7 +177,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
     marginTop: '5px'
   }
   const alertStyleRed = {
-    border: '3px solid #ed143d',
+    border: '3px solid #0043ff',
     backgroundColor: '#e9ebef'
   }
 
@@ -168,16 +201,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
       <div className="container">
         <div className="row">
           <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <iframe
-              width="100%"
-              height="250"
-              src="https://www.youtube.com/embed/XgUmv9QMi4A"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
-
             <Alert
               style={alertStyleRed}
               type="success"
@@ -188,7 +211,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
                     flexDirection: 'column',
                     alignItems: 'center',
                     backgroundColor: '#e9ebef',
-                    color: '#ed143d',
+                    color: '#0043ff',
                     fontWeight: 'bold',
                     marginBottom: '7px',
                     textAlign: 'center'
@@ -208,10 +231,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
                     {dataCheckout?.plano?.primeiraParcela ? utils.formatBRL(dataCheckout.plano.primeiraParcela) : ''}
                     <span style={{ color: '#438105' }}> *</span>
                   </span>
-                  <span style={{ lineHeight: '1.2' }}>
-                    {' '}
-                    <span style={{ color: '#438105' }}>*</span> Matrícula | Saver Club R$ 8,32
-                  </span>
+
                   <span
                     style={{
                       lineHeight: '1.2',
@@ -226,40 +246,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
                 </div>
               }
             />
-
-            {initialCuppomValue !== null && (
-              <Alert
-                style={alertStyle}
-                className="fundoverde"
-                type="success"
-                message={
-                  <div
-                    className="fonteverde"
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      fontWeight: 'bold',
-                      marginBottom: '7px',
-                      textAlign: 'center'
-                    }}
-                  >
-                    {' '}
-                    <span style={{ fontSize: '25px', marginBottom: '-10px' }}>🎫 R$ 50</span>
-                    <span style={{ lineHeight: '1.2' }}>de DESCONTO aplicado!</span>
-                    <span style={{ fontSize: '15px' }}>
-                      1 Parcela{' '}
-                      <span style={{ fontSize: '25px' }}>
-                        {dataCheckout?.plano?.primeiraParcela !== null &&
-                        dataCheckout?.plano?.primeiraParcela !== undefined
-                          ? utils.formatBRL(dataCheckout?.plano?.primeiraParcela - 50)
-                          : ''}
-                      </span>
-                    </span>
-                  </div>
-                }
-              />
-            )}
 
             <Form onFinish={onClickPay} form={form} style={{ margin: '5px' }}>
               <Form.Item name="nome" rules={[required]}>
@@ -283,7 +269,12 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
                 </Form.Item>
               )}
               <Form.Item name="email" rules={[required]}>
-                <Input placeholder="Seu e-mail principal" />
+                <Input
+                  placeholder="Seu e-mail principal"
+                  onChange={e => {
+                    form.setFieldsValue({ email: e.target.value }) // Atualize o valor do campo de e-mail
+                  }}
+                />
               </Form.Item>
               <Form.Item name="cuppom" initialValue={cuppomValue}>
                 <Input placeholder="Cuppom" />

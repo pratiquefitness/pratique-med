@@ -11,7 +11,9 @@ body {
   padding: 0;
   margin: 0;
 }
-
+h6 {
+  text-align: center;
+}
 .background-section {
   background: url('/topo.jpg') no-repeat center bottom;
   background-size: cover;
@@ -24,7 +26,8 @@ body {
 }
 
 header {
-  background: $dark;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(39px);
   ul.nav li {
     list-style: none;
     text-decoration: none;
@@ -83,7 +86,8 @@ header {
 }
 
 footer {
-  background: $dark;
+  display: none;
+  background: var(--bs-body-bg);
   color: white;
   h6 {
     font-weight: bold;
@@ -91,7 +95,7 @@ footer {
   ul {
     margin-top: 20px;
     padding-top: 10px;
-    border-top: 2px solid $primary;
+    border-top: 2px solid #fff;
     width: 200px;
     list-style: none;
     padding: 0;
@@ -152,8 +156,8 @@ footer {
   position: fixed;
   width: 60px;
   height: 60px;
-  bottom: 40px;
-  right: 40px;
+  bottom: 15px;
+  right: 5px;
   background-color: #25d366;
   color: #fff;
   border-radius: 50px;
@@ -169,7 +173,7 @@ footer {
 
 .content {
   padding-top: 30px;
-  padding-bottom: 30px;
+  padding-bottom: 220px;
 }
 
 .box-plan {
@@ -281,6 +285,7 @@ footer {
   background-color: #e9ebef;
   padding: 50px;
   border-radius: 6px;
+  display: none;
 }
 .widget:last-child {
   border-bottom: 0px;
@@ -307,6 +312,7 @@ footer {
 }
 
 .box-checkout-fixed {
+  display: block;
   position: fixed;
   width: 100%;
   bottom: 0;
@@ -315,6 +321,7 @@ footer {
   -webkit-box-shadow: 0px -5px 15px -5px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px -5px 15px -5px rgba(0, 0, 0, 0.5);
   box-shadow: 0px -5px 15px -5px rgba(0, 0, 0, 0.5);
+  padding-bottom: 50px;
 }
 
 .recaptcha {
@@ -322,4 +329,90 @@ footer {
   div {
     margin: auto;
   }
+}
+.ant-modal .ant-modal-content {
+  padding: 0px;
+  background-color: transparent;
+}
+/* Add this CSS code to your stylesheet or inline style */
+@keyframes blink {
+  0%,
+  100% {
+    background-color: #0043ff;
+  }
+  50% {
+    background-color: #ffffff; /* Change this to the desired background color */
+  }
+}
+
+@keyframes blink4 {
+  0%,
+  100% {
+    background-color: #438105;
+  }
+  50% {
+    background-color: #ffffff; /* Change this to the desired background color */
+  }
+}
+
+@keyframes blink2 {
+  0%,
+  100% {
+    color: #fff;
+  }
+  50% {
+    color: #000000; /* Change this to the desired background color */
+  }
+}
+
+@keyframes blink3 {
+  0%,
+  100% {
+    color: #fff;
+  }
+  50% {
+    color: #07551b; /* Change this to the desired background color */
+  }
+}
+
+@keyframes blink5 {
+  0%,
+  100% {
+    color: #fff;
+  }
+  50% {
+    color: #07551b; /* Change this to the desired background color */
+  }
+}
+
+/* Rest of your CSS styles */
+
+/* Add the animation to the checkbox style */
+.fundoadiciona {
+  animation: blink 4s infinite;
+}
+
+.fonteverde {
+  animation: blink5 4s infinite;
+}
+.fundoverde {
+  animation: blink4 4s infinite;
+}
+
+.fonteadiciona {
+  animation: blink2 4s infinite;
+}
+
+.fonteadiciona3 {
+  animation: blink3 4s infinite;
+}
+.ant-modal-confirm .ant-modal-confirm-paragraph {
+  max-width: 100%;
+}
+.box-checkout-fixed {
+  display: none;
+}
+.ant-modal .ant-modal-content {
+  padding: 10px;
+  background-color: #fff;
 }

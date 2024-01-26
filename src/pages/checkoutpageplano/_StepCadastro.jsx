@@ -9,6 +9,15 @@ const required = {
   message: 'Preencha este campo.'
 }
 
+const phoneMask = '(99) 99999-9999'
+
+const phoneValidator = (rule, value) => {
+  if (!value || value.replace(/\D/g, '').length !== 11) {
+    return Promise.reject('Digite um número de telefone válido')
+  }
+  return Promise.resolve()
+}
+
 export default function StepCadastro({
   step,
   unidade,
@@ -37,7 +46,7 @@ export default function StepCadastro({
       <div className="container">
         <div className="row">
           <div className="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-            <h3 className="mb-4">Agora, preencha estes campos de cadastro na Pratique:</h3>
+            <h6 className="mb-4">Agora, preencha estes campos de cadastro na Pratique Med:</h6>
             <Form onFinish={onFinishForm} form={form}>
               <Form.Item name="nome" rules={[required]}>
                 <Input placeholder="Nome Completo" />
@@ -54,12 +63,16 @@ export default function StepCadastro({
               >
                 <Input placeholder="Seu e-mail principal" />
               </Form.Item>
-              <Form.Item name="telefone" rules={[required]}>
-                <ReactInputMask mask="(99) 99999-9999">
+              <Form.Item name="telefone" rules={[required, { validator: phoneValidator }]}>
+                <ReactInputMask mask={phoneMask}>
                   {inputProps => <Input placeholder="Seu telefone (WhatsApp)" {...inputProps} />}
                 </ReactInputMask>
               </Form.Item>
-
+              <div className="text-center py-3">
+                <Button type="primary" htmlType="submit">
+                  Continuar Cadastro
+                </Button>
+              </div>
               <p className="text-center" style={{ fontSize: 12 }}>
                 Utilizamos seus dados pessoais para o cadastro em nossa plataforma, que nos permite lhe prestar nossos
                 serviços. Para mais informações, acesse nosso Aviso de Privacidade. Caso não queira receber comunicações
@@ -68,11 +81,6 @@ export default function StepCadastro({
                 ser desativadas. O envio de informações sobre seus planos e/ou sobre sua Pratique continuarão a ser
                 encaminhados, pois são essenciais para prestação de serviços.
               </p>
-              <div className="text-center py-3">
-                <Button type="primary" htmlType="submit">
-                  Continuar Cadastro
-                </Button>
-              </div>
             </Form>
             <Footer />
           </div>
