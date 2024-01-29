@@ -54,7 +54,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
           form.setFieldsValue({ email: cliente.email })
           Modal.info({
             title: 'E-mail Atualizado',
-            content: `Já existe um cadastro no sistema com este email, use : ${cliente.email} para realizar esta compra`
+            content: `Já existe um cadastro no sistema com este email, use: ${cliente.email} para realizar esta compra`
           })
         } else {
           Modal.warning({
@@ -65,6 +65,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
       }
     }
   }, [apiResponse, form])
+
   const [values, setValues] = useState({
     cardSecurityCode: '',
     cardExpiration: '',
@@ -97,10 +98,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   const closeModal = () => {
     setModalVisible(false)
   }
-
-  useEffect(() => {
-    console.log('cuppomValue:', cuppomValue)
-  }, [cuppomValue])
 
   useEffect(() => {
     form.setFieldsValue(dataCheckout)
