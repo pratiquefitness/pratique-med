@@ -104,7 +104,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
 
   useEffect(() => {
     form.setFieldsValue(dataCheckout)
-  }, [])
+  }, [dataCheckout, form])
 
   const onSubmit = () => {
     form.submit()
