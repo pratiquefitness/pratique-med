@@ -143,11 +143,11 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
         const obsValue = matchUrl ? matchUrl[1] : null
 
         if (obsValue === 'DIRETONUTRI' && typeof window !== 'undefined') {
-          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-nutri/'
+          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-plano/'
           return
         }
         if (obsValue === 'DIRETOBIKE' && typeof window !== 'undefined') {
-          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-bike/'
+          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-plano/'
           return
         }
         if (typeof window !== 'undefined') {
