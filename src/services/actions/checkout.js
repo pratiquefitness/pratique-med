@@ -14,15 +14,27 @@ export const checkRecaptchaSecret = async (isVerified, ip) => {
 }
 
 export const consultarClienteApi = async (unidade, cpf, email) => {
+  //console.log('CPF:', cpf)
+  // console.log('Emailjjjj:', email)
   const unidadeFinal = unidade.chave
+  //console.log('Unidade:', unidadeFinal)
+
   const apiUrl = `https://app.pactosolucoes.com.br/api/prest/cliente/${unidadeFinal}/consultarClienteJson?cpf=${cpf}&email=${email}`
 
   try {
-    const response = await apiPacto.post(apiUrl, {})
-    //console.log('Resposta da API:', response.data)
+    const response = await apiPacto.post(
+      apiUrl,
+      {},
+      {
+        headers: {
+          Cookie: 'JSESSIONID=6dac01ddbee98d751dc79d8aa98a' // Add any other required headers here
+        }
+      }
+    )
+    console.log('Resposta da API:', response.data)
     return response.data
   } catch (error) {
-    // console.error('Erro na consulta do cliente:', error)
+    console.error('Erro na consulta do cliente:', error)
     throw error
   }
 }
