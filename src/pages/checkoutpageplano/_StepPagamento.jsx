@@ -27,38 +27,49 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   const [modalVisible, setModalVisible] = useState(false)
   const [apiResponse, setApiResponse] = useState(null)
 
-  useEffect(() => {
-    // Chame a função apenas se o CPF foi inserido
-    if (cpfEntered) {
-      const consultarCliente = async () => {
-        try {
-          const response = await consultarClienteApi(unidade, form.getFieldValue('cpf'), form.getFieldValue('email'))
-          setApiResponse(response)
-        } catch (error) {
-          console.error('Erro ao consultar o cliente:', error)
-          setApiResponse(null)
-        }
-      }
+  const handleChangeCpf = e => {
+    form.setFieldsValue({ cpf: e.target.value }) // Update the form field value
+  }
 
-      consultarCliente()
+  const consultarCliente = async () => {
+    try {
+      const response = await consultarClienteApi(
+        unidade,
+        form.getFieldValue('cpf') || null,
+        form.getFieldValue('email')
+      )
+      setApiResponse(response)
+    } catch (error) {
+      console.error('Erro ao consultar o cliente:', error)
+      setApiResponse(null)
     }
-  }, [cpfEntered, form.getFieldValue('cpf')])
+  }
 
   useEffect(() => {
     if (apiResponse) {
       const cliente = apiResponse.return[0]
 
-      if (cliente.cpf === form.getFieldValue('cpf') && cliente.email !== form.getFieldValue('email')) {
-        // CPF igual, mas e-mail diferente
-        form.setFieldsValue({ email: cliente.email })
-        // Abra o pop-up informando que o e-mail foi atualizado
-        // ...
-      } else if (cliente.cpf === form.getFieldValue('cpf') && cliente.email === form.getFieldValue('email')) {
-        // CPF e e-mail iguais, exiba pop-up informando que o cadastro já existe
-        // ...
+      if (cliente.cpf === form.getFieldValue('cpf')) {
+        // CPF igual
+        if (cliente.email !== form.getFieldValue('email')) {
+          // E-mail diferente
+          form.setFieldsValue({ email: cliente.email })
+          // Abra o modal informando que o e-mail foi atualizado
+          Modal.info({
+            title: 'E-mail Atualizado',
+            content: `O e-mail foi atualizado para: ${cliente.email}`
+          })
+        } else {
+          // E-mail igual
+          // Abra o modal informando que o cadastro já existe
+          Modal.warning({
+            title: 'Cadastro Existente',
+            content: 'Cadastro já existe para este CPF e e-mail'
+          })
+        }
       }
     }
-  }, [apiResponse])
+  }, [apiResponse, form])
 
   const [values, setValues] = useState({
     cardSecurityCode: '',
@@ -252,8 +263,8 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
               <Form.Item name="nome" rules={[required]}>
                 <Input placeholder="Nome Completo" />
               </Form.Item>
-              <Form.Item name="cpf" rules={[required]}>
-                <ReactInputMask mask="999.999.999-99">
+              <Form.Item name="cpf" rules={[{ required: true, message: 'Por favor, insira seu CPF.' }]}>
+                <ReactInputMask mask="999.999.999-99" onBlur={consultarCliente} onChange={handleChangeCpf}>
                   {inputProps => <Input placeholder="Seu CPF" {...inputProps} />}
                 </ReactInputMask>
               </Form.Item>
