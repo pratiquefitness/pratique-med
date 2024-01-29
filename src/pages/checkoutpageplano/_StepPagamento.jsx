@@ -54,7 +54,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
           form.setFieldsValue({ email: cliente.email })
           Modal.info({
             title: 'E-mail Atualizado',
-            content: `O e-mail foi atualizado para: ${cliente.email}`
+            content: `Já existe um cadastro no sistema com este email, use : ${cliente.email} para realizar esta compra`
           })
         } else {
           Modal.warning({
