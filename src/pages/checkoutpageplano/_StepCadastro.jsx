@@ -33,7 +33,7 @@ export default function StepCadastro({
     setDataCheckout(prev => {
       return { ...prev, ...values }
     })
-    ApiPratique.post('/pagamento/checkoutpageplano/api/lead.php', { ...dataCheckout, ...values, unidade })
+    //ApiPratique.post('/pagamento/checkoutpageplano/api/lead.php', { ...dataCheckout, ...values, unidade })
     setStep(2)
   }
 
