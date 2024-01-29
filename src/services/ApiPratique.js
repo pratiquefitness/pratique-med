@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const ApiPratique = axios.create({
-  baseURL: `https://pagamento.pratiquemed.com.br/`
+  baseURL: `https://pratiquefitness.com.br`
 })
 
 export default ApiPratique
