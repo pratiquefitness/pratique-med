@@ -66,6 +66,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
       }
     }
   }, [apiResponse, form])
+
   const [values, setValues] = useState({
     cardSecurityCode: '',
     cardExpiration: '',
@@ -75,45 +76,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
     focus: ''
   })
   const numberOfQuota = dataCheckout?.plano?.maxDivisao ? dataCheckout.plano.maxDivisao : 1
-
-  const handleCheckboxChange = () => {
-    setTermosAceitos(!termosAceitos)
-  }
-
-  const [modalRef, setModalRef] = useState(null)
-  const [applyDiscount, setApplyDiscount] = useState(false)
-  const [termosAceitos, setTermosAceitos] = useState(false)
-  const currentUrl = router.asPath
-  const temParametroObs = currentUrl.includes('obs=')
-  const temAfiliadoMed = currentUrl.toLowerCase().includes('afiliadomed')
-  const initialCuppomValue = !temAfiliadoMed ? null : 'projetovidao'
-  const [cuppomValue, setCuppomValue] = useState(initialCuppomValue)
-
-  // Fun  o para abrir o modal ao clicar no link
-  const openModal = () => {
-    setModalVisible(true)
-  }
-
-  // Fun  o para fechar o modal
-  const closeModal = () => {
-    setModalVisible(false)
-  }
-
-  useEffect(() => {
-    console.log('cuppomValue:', cuppomValue)
-  }, [cuppomValue])
-
-  useEffect(() => {
-    form.setFieldsValue(dataCheckout)
-  }, [])
-
-  const onSubmit = () => {
-    form.submit()
-  }
-
-  const verifyCallback = value => {
-    setVerified(value)
-  }
 
   const onClickPay = async values => {
     const ip = await getIP()
@@ -162,6 +124,45 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
     } else {
       setInvalidCC(true)
     }
+  }
+
+  const handleCheckboxChange = () => {
+    setTermosAceitos(!termosAceitos)
+  }
+
+  const [modalRef, setModalRef] = useState(null)
+  const [applyDiscount, setApplyDiscount] = useState(false)
+  const [termosAceitos, setTermosAceitos] = useState(false)
+  const currentUrl = router.asPath
+  const temParametroObs = currentUrl.includes('obs=')
+  const temAfiliadoMed = currentUrl.toLowerCase().includes('afiliadomed')
+  const initialCuppomValue = !temAfiliadoMed ? null : 'projetovidao'
+  const [cuppomValue, setCuppomValue] = useState(initialCuppomValue)
+
+  // Fun  o para abrir o modal ao clicar no link
+  const openModal = () => {
+    setModalVisible(true)
+  }
+
+  // Fun  o para fechar o modal
+  const closeModal = () => {
+    setModalVisible(false)
+  }
+
+  useEffect(() => {
+    console.log('cuppomValue:', cuppomValue)
+  }, [cuppomValue])
+
+  useEffect(() => {
+    form.setFieldsValue(dataCheckout)
+  }, [])
+
+  const onSubmit = () => {
+    form.submit()
+  }
+
+  const verifyCallback = value => {
+    setVerified(value)
   }
 
   const onChangeCep = event => {
