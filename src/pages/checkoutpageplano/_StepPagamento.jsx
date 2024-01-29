@@ -46,22 +46,17 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   }
 
   useEffect(() => {
-    if (apiResponse) {
+    if (apiResponse && apiResponse.return && apiResponse.return.length > 0) {
       const cliente = apiResponse.return[0]
 
       if (cliente.cpf === form.getFieldValue('cpf')) {
-        // CPF igual
         if (cliente.email !== form.getFieldValue('email')) {
-          // E-mail diferente
           form.setFieldsValue({ email: cliente.email })
-          // Abra o modal informando que o e-mail foi atualizado
           Modal.info({
             title: 'E-mail Atualizado',
             content: `O e-mail foi atualizado para: ${cliente.email}`
           })
         } else {
-          // E-mail igual
-          // Abra o modal informando que o cadastro já existe
           Modal.warning({
             title: 'Cadastro Existente',
             content: 'Cadastro já existe para este CPF e e-mail'
@@ -70,7 +65,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
       }
     }
   }, [apiResponse, form])
-
   const [values, setValues] = useState({
     cardSecurityCode: '',
     cardExpiration: '',
