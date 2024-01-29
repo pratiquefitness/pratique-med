@@ -46,7 +46,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   }
 
   useEffect(() => {
-    console.log('apiResponse:', apiResponse)
     if (apiResponse && apiResponse.return && apiResponse.return.length > 0) {
       const cliente = apiResponse.return[0]
 
@@ -66,7 +65,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
       }
     }
   }, [apiResponse, form])
-
   const [values, setValues] = useState({
     cardSecurityCode: '',
     cardExpiration: '',
