@@ -28,7 +28,8 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   const [apiResponse, setApiResponse] = useState(null)
 
   const handleChangeCpf = e => {
-    form.setFieldsValue({ cpf: e.target.value }) // Update the form field value
+    const formattedValue = e.target.value.replace(/_/g, '') // Remove underscores
+    form.setFieldsValue({ cpf: formattedValue })
   }
 
   const consultarCliente = async () => {
@@ -48,21 +49,30 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   }
 
   useEffect(() => {
-    if (apiResponse && apiResponse.return && apiResponse.return.length > 0) {
-      const cliente = apiResponse.return[0]
+    const cpfInicio = form.getFieldValue('cpf')
 
-      if (cliente.cpf === form.getFieldValue('cpf')) {
-        if (cliente.email !== form.getFieldValue('email')) {
-          form.setFieldsValue({ email: cliente.email })
-          Modal.info({
-            title: 'E-mail Atualizado',
-            content: `Já existe um cadastro no sistema com este email, use: ${cliente.email} para realizar esta compra`
-          })
-        } else {
-          Modal.warning({
-            title: 'Cadastro Existente',
-            content: 'Cadastro já existe para este CPF e e-mail '
-          })
+    if (cpfInicio) {
+      // Verifica se cpfInicio não é undefined ou null
+      const cpfValue = cpfInicio.replace(/_/g, '')
+
+      if (apiResponse && apiResponse.return && apiResponse.return.length > 0) {
+        const cliente = apiResponse.return[0]
+
+        console.log('Valor do CPF:', cpfValue, cliente.cpf)
+
+        if (cliente.cpf === cpfValue) {
+          if (cliente.email !== cpfValue) {
+            form.setFieldsValue({ email: cliente.email })
+            Modal.info({
+              title: 'E-mail Atualizado',
+              content: `Já existe um cadastro no sistema com este email, use: ${cliente.email} para realizar esta compra`
+            })
+          } else {
+            Modal.warning({
+              title: 'Cadastro Existente',
+              content: 'Cadastro já existe para este CPF e e-mail'
+            })
+          }
         }
       }
     }
@@ -117,27 +127,45 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
     setVerified(value)
   }
 
+  const removeUnderscores = str => {
+    return str.replace(/_/g, '')
+  }
   const onClickPay = async values => {
+    const cleanedCardExpiration = removeUnderscores(values.cardExpiration)
+    const cleanedCardSecurityCode = removeUnderscores(values.cardSecurityCode)
+    const cleanedCardNumber = values.cardNumber.replace(/[^0-9]/g, '') // Remover caracteres não numéricos do número do cartão
+
+    // Verificar se os valores formatados estão corretamente associados aos campos no formulário
+    console.log('Formatted Values:', {
+      cardNumber: cleanedCardNumber,
+      cardExpiration: cleanedCardExpiration,
+      cardSecurityCode: cleanedCardSecurityCode
+    })
+
     const ip = await getIP()
 
     const validateCreditCard = [
       valid.cardholderName(values.cardName).isValid,
-      valid.number(values.cardNumber).isValid,
-      valid.expirationDate(values.cardExpiration).isValid,
-      valid.cvv(values.cardSecurityCode).isValid
+      valid.number(cleanedCardNumber).isValid,
+      valid.expirationDate(cleanedCardExpiration).isValid,
+      valid.cvv(cleanedCardSecurityCode).isValid
     ]
 
     if (!validateCreditCard.includes(false)) {
       setPayLoading(true)
+
+      // Verificar se os valores estão corretamente associados aos campos no objeto payData
       const payData = {
         ...dataCheckout,
         ...values,
         unidade,
         isVerified,
         ip,
-        numberOfQuota
+        numberOfQuota,
+        cardNumber: cleanedCardNumber,
+        cardExpiration: cleanedCardExpiration,
+        cardSecurityCode: cleanedCardSecurityCode
       }
-
       const payResponse = await payOrder(payData)
 
       if (payResponse) {
@@ -145,8 +173,8 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
         const matchUrl = currentUrl.match(/obs=([^|]+)/)
         const obsValue = matchUrl ? matchUrl[1] : null
 
-        if (obsValue === 'DIRETONUTRI' && typeof window !== 'undefined') {
-          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-nutri/'
+        if (obsValue === 'PRATIQUEMED' && typeof window !== 'undefined') {
+          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-plano/'
           return
         }
         if (obsValue === 'DIRETOBIKE' && typeof window !== 'undefined') {
@@ -193,11 +221,25 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   const handleChangeCard = e => {
     const { name, value } = e.target
 
+    // Limpar caracteres não numéricos para telefone
     if (name === 'telefone') {
-      const cleanedValue = value.replace(/[\s-]/g, '')
+      const cleanedValue = value.replace(/[^0-9]/g, '')
       form.setFieldsValue({ [name]: cleanedValue })
     }
 
+    // Limpar caracteres não numéricos para número do cartão de crédito
+    if (name === 'cardNumber') {
+      const cleanedValue = value.replace(/[^0-9]/g, '')
+      form.setFieldsValue({ [name]: cleanedValue })
+    }
+
+    // Limpar caracteres não numéricos para CPF
+    if (name === 'cpf') {
+      const cleanedValue = value.replace(/[^0-9]/g, '')
+      form.setFieldsValue({ [name]: cleanedValue })
+    }
+
+    // Atualizar o estado com valores formatados
     setValues(prevValues => ({
       ...prevValues,
       [name]: utils.removeUnderlines(value),
@@ -265,14 +307,14 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
                   {inputProps => <Input placeholder="Seu CPF" {...inputProps} />}
                 </ReactInputMask>
               </Form.Item>
-              {temAfiliadoMed && (
+              {!temAfiliadoMed && (
                 <Form.Item name="data_nascimento">
                   <ReactInputMask mask="99/99/9999">
                     {inputProps => <Input placeholder="Data de Nascimento" {...inputProps} />}
                   </ReactInputMask>
                 </Form.Item>
               )}
-              {!temAfiliadoMed && (
+              {temAfiliadoMed && (
                 <Form.Item name="data_nascimento" initialValue={null} noStyle>
                   <Input type="hidden" />
                 </Form.Item>
@@ -352,7 +394,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
                 </a>
               </p>
               <div className="text-center py-3">
-                <Button type="primary" htmlType="submit" onClick={onClickPay}>
+                <Button type="primary" htmlType="submit">
                   Pagar Agora
                 </Button>
               </div>{' '}
