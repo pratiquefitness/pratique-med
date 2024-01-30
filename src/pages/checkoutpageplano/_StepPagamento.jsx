@@ -61,7 +61,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
         } else {
           Modal.warning({
             title: 'Cadastro Existente',
-            content: 'Cadastro já existe para este CPF e e-mail'
+            content: 'Cadastro já existe para este CPF e e-mail '
           })
         }
       }
