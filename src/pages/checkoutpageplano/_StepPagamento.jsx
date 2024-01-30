@@ -34,16 +34,16 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
 
   const consultarCliente = async () => {
     try {
-      console.log('Função consultarCliente iniciada')
+      // console.log('Função consultarCliente iniciada')
       const response = await consultarClienteApi(
         unidade,
         form.getFieldValue('cpf') || null,
         form.getFieldValue('email')
       )
-      console.log('Resposta de consultarCliente:', response)
+      //console.log('Resposta de consultarCliente:', response)
       setApiResponse(response)
     } catch (error) {
-      console.error('Erro ao consultar o cliente:', error)
+      // console.error('Erro ao consultar o cliente:', error)
       setApiResponse(null)
     }
   }
@@ -58,7 +58,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
       if (apiResponse && apiResponse.return && apiResponse.return.length > 0) {
         const cliente = apiResponse.return[0]
 
-        console.log('Valor do CPF:', cpfValue, cliente.cpf)
+        //  console.log('Valor do CPF:', cpfValue, cliente.cpf)
 
         if (cliente.cpf === cpfValue) {
           if (cliente.email !== cpfValue) {
@@ -112,7 +112,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   }
 
   useEffect(() => {
-    console.log('cuppomValue:', cuppomValue)
+    // console.log('cuppomValue:', cuppomValue)
   }, [cuppomValue])
 
   useEffect(() => {
@@ -136,11 +136,6 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
     const cleanedCardNumber = values.cardNumber.replace(/[^0-9]/g, '') // Remover caracteres não numéricos do número do cartão
 
     // Verificar se os valores formatados estão corretamente associados aos campos no formulário
-    console.log('Formatted Values:', {
-      cardNumber: cleanedCardNumber,
-      cardExpiration: cleanedCardExpiration,
-      cardSecurityCode: cleanedCardSecurityCode
-    })
 
     const ip = await getIP()
 

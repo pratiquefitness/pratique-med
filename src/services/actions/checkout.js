@@ -20,10 +20,10 @@ export const consultarClienteApi = async (unidade, cpf, email) => {
 
   try {
     const response = await apiPactoCpf.post(apiUrl, {})
-    console.log('Resposta da API:', response.data)
+    //console.log('Resposta da API:', response.data)
     return response.data
   } catch (error) {
-    console.error('Erro na consulta do cliente:', error)
+    // console.error('Erro na consulta do cliente:', error)
     throw error
   }
 }
