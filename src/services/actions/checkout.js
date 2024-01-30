@@ -13,6 +13,20 @@ export const checkRecaptchaSecret = async (isVerified, ip) => {
   return response?.data?.success || 0
 }
 
+export const consultarClienteApi = async (unidade, cpf, email) => {
+  const unidadeFinal = unidade.chave
+  const apiUrl = `https://app.pactosolucoes.com.br/api/prest/cliente/${unidadeFinal}/consultarClienteJson?cpf=${cpf}&email=${email}`
+
+  try {
+    const response = await apiPacto.post(apiUrl, {})
+    console.log('Resposta da API:', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Erro na consulta do cliente:', error)
+    throw error
+  }
+}
+
 export const payOrder = async payData => {
   const numeroCartao = payData.cardNumber.replace(/\s+/g, '')
   const validade = payData.cardExpiration.replace('/', '/20')

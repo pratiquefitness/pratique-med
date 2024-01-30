@@ -16,10 +16,6 @@ const dataCheckoutState = {
   data_nascimento: null,
   email: null,
   telefone: null,
-  cep: null,
-  endereco: null,
-  numero: null,
-  bairro: null,
   token: null
 }
 
