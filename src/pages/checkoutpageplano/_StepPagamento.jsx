@@ -33,11 +33,13 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
 
   const consultarCliente = async () => {
     try {
+      console.log('Função consultarCliente iniciada')
       const response = await consultarClienteApi(
         unidade,
         form.getFieldValue('cpf') || null,
         form.getFieldValue('email')
       )
+      console.log('Resposta de consultarCliente:', response)
       setApiResponse(response)
     } catch (error) {
       console.error('Erro ao consultar o cliente:', error)
@@ -100,8 +102,12 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
   }
 
   useEffect(() => {
+    console.log('cuppomValue:', cuppomValue)
+  }, [cuppomValue])
+
+  useEffect(() => {
     form.setFieldsValue(dataCheckout)
-  }, [dataCheckout, form])
+  }, [])
 
   const onSubmit = () => {
     form.submit()
@@ -140,11 +146,11 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
         const obsValue = matchUrl ? matchUrl[1] : null
 
         if (obsValue === 'DIRETONUTRI' && typeof window !== 'undefined') {
-          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-plano/'
+          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-nutri/'
           return
         }
         if (obsValue === 'DIRETOBIKE' && typeof window !== 'undefined') {
-          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-plano/'
+          window.location.href = 'https://pratiquefitness.com.br/compra-realizada-bike/'
           return
         }
         if (typeof window !== 'undefined') {
@@ -180,7 +186,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
     marginTop: '5px'
   }
   const alertStyleRed = {
-    border: '3px solid #0043ff',
+    border: '3px solid #ed143d',
     backgroundColor: '#e9ebef'
   }
 
@@ -346,7 +352,7 @@ export default function StepPagamento({ step, unidade, dataCheckout, planoLoadin
                 </a>
               </p>
               <div className="text-center py-3">
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" onClick={onClickPay}>
                   Pagar Agora
                 </Button>
               </div>{' '}

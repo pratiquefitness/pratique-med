@@ -36,11 +36,8 @@ export const payOrder = async payData => {
     plano: payData.plano.codigo,
     nome: payData.nome,
     email: payData.email,
+    numeroCupomDesconto: payData.cuppom,
     telefone: payData.telefone,
-    cep: payData.cep,
-    endereco: payData.endereco,
-    numero: payData.numero,
-    bairro: payData.bairro,
     dataNascimento: payData.data_nascimento,
     cpf: payData.cpf,
     ipPublico: payData.ip,
@@ -48,17 +45,16 @@ export const payOrder = async payData => {
     numeroCartao: numeroCartao,
     validade: validade,
     cvv: payData.cardSecurityCode,
-    cobrarParcelasEmAberto: true
+    cobrarParcelasEmAberto: true,
+    nrVezesDividir: payData.numberOfQuota
   })
 
   if (response.data.return === 'APROVADA') {
-    await ApiPratique.get('pagamento/checkoutpageplano/api/salvamed.php', {
+    await ApiPratique.get('pagamento/checkoutpageplano/api/salvarafiliado.php', {
       params: {
-        plano: payData.plano.codigo,
-        nome: payData.nome,
-        email: payData.email,
+        obs: payData.obs,
         cpf: payData.cpf,
-        dataNascimento: payData.data_nascimento
+        email: payData.email
       }
     })
     return true
