@@ -51,11 +51,14 @@ export const payOrder = async payData => {
   })
 
   if (response.data.return === 'APROVADA') {
-    await ApiPratique.get('pagamento/checkoutpageplano/api/salvarafiliado.php', {
+    await ApiPratique.get('pagamento/checkoutpageplano/api/salvamed.php', {
       params: {
         obs: payData.obs,
         cpf: payData.cpf,
-        email: payData.email
+        email: payData.email,
+        nomeplano: payData.plano.codigo,
+        telefone: payData.telefone,
+        dataNascimento: payData.dataNascimento
       }
     })
     return true
